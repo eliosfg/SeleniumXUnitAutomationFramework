@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Pages\BasePage.cs" />
+    <Compile Include="Pages\FiltersAndLabelsPage.cs" />
     <Compile Include="Pages\TodayPage.cs" />
     <Compile Include="Pages\InboxPage.cs" />
     <Compile Include="Pages\LoginPage.cs" />

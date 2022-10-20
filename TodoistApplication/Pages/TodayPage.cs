@@ -16,6 +16,7 @@ namespace TodoistApplication.Pages
         private IWebElement deleteMenuOption => _driver.FindElement(By.CssSelector("li[data-action-hint='task-overflow-menu-delete']"));
         private IWebElement deleteConfirmButton => _driver.FindElement(By.CssSelector("button[type='submit'] span"));
         private IWebElement inboxButton => _driver.FindElement(By.Id("filter_inbox"));
+        private IWebElement filterAndLabelButton => _driver.FindElement(By.Id("filters_labels"));
 
         private string todayTasksXpath = "//section[contains(@aria-label, 'Today')]";
         private string taskTitleXpath = "//li[@class='task_list_item']//div[text()='{0}']";
@@ -95,6 +96,13 @@ namespace TodoistApplication.Pages
             cmnElement.ClickElement(inboxButton);
 
             return new InboxPage(_driver);
+        }
+
+        public FiltersAndLabelsPage GoToFilterAndLabelsPage()
+        {
+            cmnElement.ClickElement(filterAndLabelButton);
+
+            return new FiltersAndLabelsPage(_driver);
         }
     }
 }
