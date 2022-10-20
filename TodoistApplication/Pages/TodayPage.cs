@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace TodoistApplication.Pages
 {
-    public class HomePage: BasePage
+    public class TodayPage: BasePage
     {
         private IWebElement headerTitle => _driver.FindElement(By.CssSelector("header h1"));
         private IWebElement addTaskLnkButton => _driver.FindElement(By.CssSelector("button.plus_add_button"));
@@ -24,7 +24,7 @@ namespace TodoistApplication.Pages
         private string setDueDateXpath = "//div[text()='{0}']//ancestor::li//button[@class='due_date_controls']";
         private string dueDateOptionXpath = "//div[@class='scheduler-suggestions']//div[text()='{0}']";
 
-        public HomePage(IWebDriver driver)
+        public TodayPage(IWebDriver driver)
         {
             _driver = driver;
         }
@@ -51,7 +51,7 @@ namespace TodoistApplication.Pages
             IWebElement taskItem = tasksSection.FindElement(By.XPath(String.Format(taskTitleXpath, taskTitle)));
 
             WebDriverActions.moveToElement(taskItem, _driver);
-            Thread.Sleep(2000);
+            getWebDriverWait(10).Until(ExpectedConditions.ElementIsVisible(By.XPath(String.Format(editButtonXpath, taskTitle))));
             IWebElement moreMenu = taskItem.FindElement(By.XPath(threeDotsMenuXpath));
 
             cmnElement.ClickElement(moreMenu);

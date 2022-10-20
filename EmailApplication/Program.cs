@@ -41,11 +41,6 @@ namespace EmailApplication
             {
                 Console.WriteLine("You need to specify the \"--email\" and  \"--subject\" arguments to send an email");
             }
-
-            /*
-            Console.WriteLine("Sending email...");
-            c("saul.fuentes@jalasoft.com", "Test Results");
-            Console.WriteLine("Email sent successfully!");*/
         }
     }
 }

@@ -6,25 +6,25 @@ using Xunit;
 
 namespace TodoistTests.tests
 {
-    [Collection("Sequence")]
-    public class HomePageTests : IClassFixture<BaseTestFixture>, IDisposable
+    [Collection("Todoist collection")]
+    public class TodayPageTests : IDisposable
     {
         private WebDriverManager webDriverManager;
-        private BaseTestFixture BaseTestFixture { get; }
+        public BaseTestFixture BaseTestFixture;
         private LoginPage loginPage;
-        private HomePage homePage;
+        private TodayPage homePage;
         private ScreenshotUtils screenshot;
 
-        public HomePageTests(BaseTestFixture baseTestFixture)
+        public TodayPageTests(BaseTestFixture baseTestFixture)
         {
             BaseTestFixture = baseTestFixture;
             webDriverManager = BrowserDriverFactory.GetBrowser(BaseTestFixture.Config.GetBrowserType());
             loginPage = new LoginPage(webDriverManager.Driver);
             screenshot = new ScreenshotUtils(webDriverManager.Driver);
-            homePage = new HomePage(webDriverManager.Driver);
+            homePage = new TodayPage(webDriverManager.Driver);
 
             webDriverManager.NavigateToURL(BaseTestFixture.Config.GetBaseUrl());
-            loginPage.LoginToApplication("eliosfg@gmail.com", "SaulFuentes1234");
+            loginPage.LoginToApplication(BaseTestFixture.Config.GetUsername(), BaseTestFixture.Config.GetPassword());
         }
 
         [Theory]
@@ -32,7 +32,6 @@ namespace TodoistTests.tests
         public void VerifyANewTaskCanBeAdded(string taskTitle, string taskDescription)
         {
             BaseTestFixture.ExtentReportUtils.createATestCase("Verify a new task can be added");
-            //BaseTestFixture.ExtentReportUtils.addTestLog(Status.Info, "Creating new task");
             homePage.AddNewTask(taskTitle, taskDescription);
 
             Assert.True(homePage.IsTaskItemDisplayed(taskTitle), $"Task \"{taskTitle}\" was not created");
@@ -43,10 +42,8 @@ namespace TodoistTests.tests
         public void VerifyATaskCanBeDeleted(string taskTitle)
         {
             BaseTestFixture.ExtentReportUtils.createATestCase("Verify a task can be deleted");
-            //BaseTestFixture.ExtentReportUtils.addTestLog(Status.Info, "Creating new task");
             homePage.AddNewTask(taskTitle, "task description");
 
-            //BaseTestFixture.ExtentReportUtils.addTestLog(Status.Info, $"Deleting the task \"{taskTitle}\"");
             homePage.DeleteTask(taskTitle);
 
             Assert.False(homePage.IsTaskItemDisplayed(taskTitle));
@@ -59,7 +56,6 @@ namespace TodoistTests.tests
             string firstTitle = "Task title";
             string firstDescription = "Task description";
             BaseTestFixture.ExtentReportUtils.createATestCase("Verify a task can be deleted");
-            //BaseTestFixture.ExtentReportUtils.addTestLog(Status.Info, "Creating new task");
             homePage.AddNewTask(firstTitle, firstDescription);
 
             homePage.EditTask(firstTitle, newTitle, newDescription);
@@ -73,10 +69,8 @@ namespace TodoistTests.tests
         public void VerifyADueDateCanBeAddedToATask(string tastTitle, string dueDate)
         {
             BaseTestFixture.ExtentReportUtils.createATestCase("Verify a due date can be added to a task");
-            //BaseTestFixture.ExtentReportUtils.addTestLog(Status.Info, "Creating new task");
             homePage.AddNewTask(tastTitle, "Task description");
 
-            //BaseTestFixture.ExtentReportUtils.addTestLog(Status.Info, $"Set due date: {dueDate}");
             homePage.SetDueDate(tastTitle, dueDate);
 
             Assert.False(homePage.IsTaskItemDisplayed(tastTitle));
@@ -87,19 +81,6 @@ namespace TodoistTests.tests
 
         public void Dispose()
         {
-            string currentExecutionTime = DateTime.Now.ToString("yyyy'-'MM'-'dd'T'HH'-'mm'-'ss");
-            string screenshotFilename = $@"{BaseTestFixture.Config.CurrentSolutionDirectory}\screenshots\test-{currentExecutionTime}.jpeg";
-
-            /*
-            Console.WriteLine(TestContext.CurrentContext.Result.Outcome);
-
-            if (TestContext.CurrentContext.Result.Outcome == ResultState.Failure)
-            {
-                extentReportUtils.addTestLog(Status.Fail, "One or more step failed");
-                screenshot.CaptureAndSaveScreenshot(screenshotFilename);
-                extentReportUtils.addScreenshot(screenshotFilename);
-            }*/
-
             webDriverManager.CloseAllBrowser();
         }
     }
