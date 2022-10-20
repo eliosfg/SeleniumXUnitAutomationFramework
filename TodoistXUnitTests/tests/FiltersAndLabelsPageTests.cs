@@ -32,7 +32,7 @@ namespace TodoistTests.tests
             BaseTestFixture.ExtentReportUtils.createATestCase("Verify a new label can be added");
             filterAndLabelPage.AddNewLabel(labelName, labelColor);
 
-            Assert.True(filterAndLabelPage.IsLabelHeaderDisplayed(labelName), $"Label \"{labelName}\" was not created");
+            Assert.True(filterAndLabelPage.IsHeaderTitleDisplayed(labelName), $"Label \"{labelName}\" was not created");
             filterAndLabelPage.GoToMainView();
             Assert.True(filterAndLabelPage.IsLabelItemDisplayed(labelName), $"Label \"{labelName}\" was not created");
         }
@@ -48,6 +48,19 @@ namespace TodoistTests.tests
             filterAndLabelPage.DeleteLabel(labelName);
 
             Assert.False(filterAndLabelPage.IsLabelItemDisplayed(labelName), $"The label {labelName} was not deleted");
+        }
+
+        [Theory]
+        [InlineData("Filter_1", "Filter_Query_1", "Blue")]
+        [InlineData("Filter_2", "Filter_Query_2", "Magenta")]
+        public void VerifyANewFilterCanBeAdded(string filterName, string filterQuery, string filterColor)
+        {
+            BaseTestFixture.ExtentReportUtils.createATestCase("Verify a new filter can be added");
+            filterAndLabelPage.AddNewFilter(filterName, filterQuery, filterColor);
+
+            Assert.True(filterAndLabelPage.IsHeaderTitleDisplayed(filterName), $"Filter \"{filterName}\" was not created");
+            filterAndLabelPage.GoToMainView();
+            Assert.True(filterAndLabelPage.IsFilterItemDisplayed(filterName), $"Label \"{filterName}\" was not created");
         }
 
         public void Dispose()
