@@ -63,6 +63,19 @@ namespace TodoistTests.tests
             Assert.True(filterAndLabelPage.IsFilterItemDisplayed(filterName), $"Label \"{filterName}\" was not created");
         }
 
+        [Theory]
+        [InlineData("Filter_1")]
+        public void VerifyAFilterCanBeDeleted(string filterName)
+        {
+            BaseTestFixture.ExtentReportUtils.createATestCase("Verify a filter can be deleted");
+            filterAndLabelPage.AddNewFilter(filterName, "Filter_query", "Blue");
+
+            filterAndLabelPage.GoToMainView();
+            filterAndLabelPage.DeleteFilter(filterName);
+
+            Assert.False(filterAndLabelPage.IsFilterItemDisplayed(filterName), $"The filter {filterName} was not deleted");
+        }
+
         public void Dispose()
         {
             webDriverManager.CloseAllBrowser();

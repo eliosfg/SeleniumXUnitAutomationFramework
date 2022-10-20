@@ -13,15 +13,17 @@ namespace TodoistApplication.Pages
         private IWebElement addRedBtn => _driver.FindElement(By.ClassName("ist_button_red"));
         private IWebElement goBackBtn => _driver.FindElement(By.ClassName("view_header__previous_view"));
         private IWebElement confirmDeleteBtn => _driver.FindElement(By.CssSelector("button[type='submit'] span"));
-        private IWebElement deleteBtn => _driver.FindElement(By.CssSelector("li[data-track='labels|menu_delete']"));
+        private IWebElement deleteLabelBtn => _driver.FindElement(By.CssSelector("li[data-track='labels|menu_delete']"));
+        private IWebElement deleteFilterBtn => _driver.FindElement(By.CssSelector("li[data-track='filters|menu_delete']"));
         private IWebElement filterNameTxtInput => _driver.FindElement(By.Id("edit_filter_modal_field_name"));
         private IWebElement filterQueryTxtInput => _driver.FindElement(By.Id("edit_filter_modal_field_query"));
 
         private string dropdownColorOptXpath = "//span[text()='{0}']";
         private string labelFilterTitleXpath = "//h1//span[text()='{0}']";
-        private string labelItemXpath = "//span[text()='{0}']//ancestor::li";
-        private string moreMenuBtnXpath = "//span[text()='{0}']//ancestor::li//button[@class='SidebarListItem__button']";
+        private string labelItemXpath = "//section[@aria-label='Labels']//span[text()='{0}']//ancestor::li";
+        private string labelMoreMenuBtnXpath = "//section[@aria-label='Labels']//span[text()='{0}']//ancestor::li//button[@class='SidebarListItem__button']";
         private string filterItemXpath = "//section[@aria-label='Filters']//span[text()='{0}']//ancestor::li";
+        private string filterMoreMenuBtnXpath = "//section[@aria-label='Filters']//span[text()='{0}']//ancestor::li//button[@class='SidebarListItem__button']";
 
         public FiltersAndLabelsPage(IWebDriver driver)
         {
@@ -62,8 +64,8 @@ namespace TodoistApplication.Pages
         {
             WebDriverActions.MoveToElement(WaitAndFindElement(By.XPath(String.Format(labelItemXpath, labelName))), _driver);
 
-            WaitAndFindElement(By.XPath(String.Format(moreMenuBtnXpath, labelName))).Click();
-            cmnElement.ClickElement(deleteBtn);
+            WaitAndFindElement(By.XPath(String.Format(labelMoreMenuBtnXpath, labelName))).Click();
+            cmnElement.ClickElement(deleteLabelBtn);
             cmnElement.ClickElement(confirmDeleteBtn);
         }
 
@@ -76,6 +78,15 @@ namespace TodoistApplication.Pages
 
             WaitAndFindElement(By.XPath(String.Format(dropdownColorOptXpath, filterColor))).Click();
             cmnElement.ClickElement(addRedBtn);
+        }
+
+        public void DeleteFilter(string filterName)
+        {
+            WebDriverActions.MoveToElement(WaitAndFindElement(By.XPath(String.Format(filterItemXpath, filterName))), _driver);
+
+            WaitAndFindElement(By.XPath(String.Format(filterMoreMenuBtnXpath, filterName))).Click();
+            cmnElement.ClickElement(deleteFilterBtn);
+            cmnElement.ClickElement(confirmDeleteBtn);
         }
     }
 }
