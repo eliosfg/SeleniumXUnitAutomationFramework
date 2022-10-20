@@ -2,6 +2,7 @@ using CommonLibs.Implementation;
 using OpenQA.Selenium.Support.UI;
 using OpenQA.Selenium;
 using System;
+using SeleniumExtras.WaitHelpers;
 
 namespace TodoistApplication.Pages
 {
@@ -15,11 +16,11 @@ namespace TodoistApplication.Pages
             cmnElement = new CommonElement();
         }
 
-        protected bool isElementDisplayed(By by, int timeoutInSeconds)
+        protected bool IsElementDisplayed(By by, int timeoutInSeconds)
         {
             try
             {
-                IWebElement newWebElement = getWebDriverWait(10).Until(e => e.FindElement(by));
+                IWebElement newWebElement = GetWebDriverWait(10).Until(e => e.FindElement(by));
                 return newWebElement.Size.Width > 0 && newWebElement.Size.Height > 0;
             }
             catch (Exception e)
@@ -28,10 +29,15 @@ namespace TodoistApplication.Pages
             }
         }
 
-        protected WebDriverWait getWebDriverWait(int timeoutInSeconds)
+        protected WebDriverWait GetWebDriverWait(int timeoutInSeconds)
         {
             WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(timeoutInSeconds));
             return wait;
+        }
+
+        protected IWebElement WaitAndFindElement(By locator)
+        {
+            return GetWebDriverWait(10).Until(ExpectedConditions.ElementIsVisible(locator));
         }
     }
 }

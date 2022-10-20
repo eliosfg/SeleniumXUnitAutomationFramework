@@ -31,7 +31,7 @@ namespace TodoistApplication.Pages
 
         public string GetHeaderTitle()
         {
-            getWebDriverWait(10).Until(e => e.FindElement(By.CssSelector("header h1")).Displayed);
+            GetWebDriverWait(10).Until(e => e.FindElement(By.CssSelector("header h1")).Displayed);
             IWebElement headerTitle = _driver.FindElement(By.CssSelector("header h1"));
 
             return headerTitle.Text;
@@ -50,8 +50,8 @@ namespace TodoistApplication.Pages
             IWebElement tasksSection = _driver.FindElement(By.XPath(todayTasksXpath));
             IWebElement taskItem = tasksSection.FindElement(By.XPath(String.Format(taskTitleXpath, taskTitle)));
 
-            WebDriverActions.moveToElement(taskItem, _driver);
-            getWebDriverWait(10).Until(ExpectedConditions.ElementIsVisible(By.XPath(String.Format(editButtonXpath, taskTitle))));
+            WebDriverActions.MoveToElement(taskItem, _driver);
+            GetWebDriverWait(10).Until(ExpectedConditions.ElementIsVisible(By.XPath(String.Format(editButtonXpath, taskTitle))));
             IWebElement moreMenu = taskItem.FindElement(By.XPath(threeDotsMenuXpath));
 
             cmnElement.ClickElement(moreMenu);
@@ -63,8 +63,8 @@ namespace TodoistApplication.Pages
         {
             IWebElement taskItem = _driver.FindElement(By.XPath(String.Format(taskTitleXpath, taskTitle)));
 
-            WebDriverActions.moveToElement(taskItem, _driver);
-            getWebDriverWait(10).Until(ExpectedConditions.ElementIsVisible(By.XPath(String.Format(editButtonXpath, taskTitle)))).Click();
+            WebDriverActions.MoveToElement(taskItem, _driver);
+            GetWebDriverWait(10).Until(ExpectedConditions.ElementIsVisible(By.XPath(String.Format(editButtonXpath, taskTitle)))).Click();
 
             cmnElement.DeleteText(taskTitleInput);
             cmnElement.DeleteText(taskDescriptionTxtArea);
@@ -79,15 +79,15 @@ namespace TodoistApplication.Pages
         {
             IWebElement taskItem = _driver.FindElement(By.XPath(String.Format(taskTitleXpath, taskTitle)));
 
-            WebDriverActions.moveToElement(taskItem, _driver);
-            getWebDriverWait(10).Until(ExpectedConditions.ElementIsVisible(By.XPath(String.Format(setDueDateXpath, taskTitle)))).Click();
+            WebDriverActions.MoveToElement(taskItem, _driver);
+            GetWebDriverWait(10).Until(ExpectedConditions.ElementIsVisible(By.XPath(String.Format(setDueDateXpath, taskTitle)))).Click();
 
-            getWebDriverWait(10).Until(ExpectedConditions.ElementIsVisible(By.XPath(String.Format(dueDateOptionXpath, dueDate)))).Click();
+            GetWebDriverWait(10).Until(ExpectedConditions.ElementIsVisible(By.XPath(String.Format(dueDateOptionXpath, dueDate)))).Click();
         }
 
         public bool IsTaskItemDisplayed(string taskTitle)
         {
-            return isElementDisplayed(By.XPath(String.Format(taskTitleXpath, taskTitle)), 10);
+            return IsElementDisplayed(By.XPath(String.Format(taskTitleXpath, taskTitle)), 10);
         }
 
         public InboxPage GoToInboxPage()
