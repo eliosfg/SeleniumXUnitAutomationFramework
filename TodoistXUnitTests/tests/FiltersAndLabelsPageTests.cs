@@ -37,6 +37,19 @@ namespace TodoistTests.tests
             Assert.True(filterAndLabelPage.IsLabelItemDisplayed(labelName), $"Label \"{labelName}\" was not created");
         }
 
+        [Theory]
+        [InlineData("Label_1")]
+        public void VerifyALabelCanBeDeleted(string labelName)
+        {
+            BaseTestFixture.ExtentReportUtils.createATestCase("Verify a new label can be deleted");
+            filterAndLabelPage.AddNewLabel(labelName, "Blue");
+            filterAndLabelPage.GoToMainView();
+
+            filterAndLabelPage.DeleteLabel(labelName);
+
+            Assert.False(filterAndLabelPage.IsLabelItemDisplayed(labelName), $"The label {labelName} was not deleted");
+        }
+
         public void Dispose()
         {
             webDriverManager.CloseAllBrowser();

@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using CommonLibs.Implementation;
+using OpenQA.Selenium;
 using System;
 
 namespace TodoistApplication.Pages
@@ -10,10 +11,13 @@ namespace TodoistApplication.Pages
         private IWebElement labelColorBtn => _driver.FindElement(By.ClassName("color_dropdown_toggle"));
         private IWebElement addLabelRedBtn => _driver.FindElement(By.ClassName("ist_button_red"));
         private IWebElement goBackBtn => _driver.FindElement(By.ClassName("view_header__previous_view"));
+        private IWebElement confirmDeleteBtn => _driver.FindElement(By.CssSelector("button[type='submit'] span"));
+        private IWebElement deleteBtn => _driver.FindElement(By.CssSelector("li[data-track='labels|menu_delete']"));
 
         private string labelColorOptXpath = "//span[text()='{0}']";
         private string labelTitleXpath = "//h1//span[text()='{0}']";
         private string labelItemXpath = "//span[text()='{0}']//ancestor::li";
+        private string moreMenuBtnXpath = "//span[text()='{0}']//ancestor::li//button[@class='SidebarListItem__button']";
 
         public FiltersAndLabelsPage(IWebDriver driver)
         {
@@ -43,6 +47,15 @@ namespace TodoistApplication.Pages
         public bool IsLabelItemDisplayed(string labelName)
         {
             return IsElementDisplayed(By.XPath(String.Format(labelItemXpath, labelName)), 10);
+        }
+
+        public void DeleteLabel(string labelName)
+        {
+            WebDriverActions.MoveToElement(WaitAndFindElement(By.XPath(String.Format(labelItemXpath, labelName))), _driver);
+
+            WaitAndFindElement(By.XPath(String.Format(moreMenuBtnXpath, labelName))).Click();
+            cmnElement.ClickElement(deleteBtn);
+            cmnElement.ClickElement(confirmDeleteBtn);
         }
     }
 }
