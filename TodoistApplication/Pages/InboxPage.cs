@@ -2,6 +2,7 @@
 using OpenQA.Selenium;
 using SeleniumExtras.WaitHelpers;
 using System;
+using System.Collections.Generic;
 
 namespace TodoistApplication.Pages
 {
@@ -13,6 +14,7 @@ namespace TodoistApplication.Pages
         private IWebElement closeTaskButton => _driver.FindElement(By.CssSelector("button[aria-label='Close modal']"));
         private IWebElement deleteMenuOption => _driver.FindElement(By.CssSelector("li[data-action-hint='task-overflow-menu-delete']"));
         private IWebElement deleteConfirmButton => _driver.FindElement(By.CssSelector("button[type='submit'] span"));
+        private IWebElement duplicateMenuOption => _driver.FindElement(By.CssSelector("li[data-action-hint='task-overflow-menu-duplicate']"));
 
         private string taskItemXpath = "//li[contains(@class, 'task_list_item')]//div[text()='{0}']";
         private string addTaskLnkBtnXpath = "//span[text()='{0}']//ancestor::li//button[@class='plus_add_button']";
@@ -25,9 +27,11 @@ namespace TodoistApplication.Pages
             _driver = driver;
         }
 
-        public bool IsTaskItemDisplayed(string taskTitle)
+        public int GetTasksCount(string taskTitle)
         {
-            return IsElementDisplayed(By.XPath(String.Format(taskItemXpath, taskTitle)), 10);
+            IReadOnlyList<IWebElement> tasksList = _driver.FindElements(By.XPath(String.Format(taskItemXpath, taskTitle)));
+
+            return tasksList.Count;
         }
 
         public void AddNewPriorityTask(string taskTitle, string taskDescription, string priority)
@@ -59,6 +63,15 @@ namespace TodoistApplication.Pages
             return taskPriority;
         }
 
+        public void DuplicateTask(string taskTitle)
+        {
+            IWebElement taskItem = _driver.FindElement(By.XPath(String.Format(taskItemXpath, taskTitle)));
+
+            WebDriverActions.MoveToElement(taskItem, _driver);
+            WaitAndFindElement(By.XPath(String.Format(moreMenuBtnXpath, taskTitle))).Click();
+            cmnElement.ClickElement(duplicateMenuOption);
+        }
+
         public void DeleteTask(string taskTitle)
         {
             IWebElement taskItem = _driver.FindElement(By.XPath(String.Format(taskItemXpath, taskTitle)));
@@ -67,6 +80,11 @@ namespace TodoistApplication.Pages
             WaitAndFindElement(By.XPath(String.Format(moreMenuBtnXpath, taskTitle))).Click();
             cmnElement.ClickElement(deleteMenuOption);
             cmnElement.ClickElement(deleteConfirmButton);
+        }
+
+        public bool IsTaskItemDisplayed(string taskTitle)
+        {
+            return IsElementDisplayed(By.XPath(String.Format(taskItemXpath, taskTitle)), 10);
         }
     }
 }
