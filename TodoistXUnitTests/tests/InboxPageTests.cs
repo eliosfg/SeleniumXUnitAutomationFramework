@@ -6,6 +6,7 @@ using Xunit;
 namespace TodoistTests.tests
 {
     [Collection("Todoist collection")]
+    [Trait("Category", "InboxPageTests")]
     public class InboxPageTests : IDisposable
     {
         private WebDriverManager webDriverManager;

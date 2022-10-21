@@ -7,6 +7,7 @@ using Xunit;
 namespace TodoistTests.tests
 {
     [Collection("Todoist collection")]
+    [Trait("Category", "LoginTests")]
     public class LoginPageTests : IDisposable
     {
         WebDriverManager webDriverManager;

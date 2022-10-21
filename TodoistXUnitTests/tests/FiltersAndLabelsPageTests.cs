@@ -6,6 +6,7 @@ using Xunit;
 namespace TodoistTests.tests
 {
     [Collection("Todoist collection")]
+    [Trait("Category", "LabelandFilterTests")]
     public class FiltersAndLabelsPageTests : IDisposable
     {
         private WebDriverManager webDriverManager;
