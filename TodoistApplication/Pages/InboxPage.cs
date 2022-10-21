@@ -15,12 +15,17 @@ namespace TodoistApplication.Pages
         private IWebElement deleteMenuOption => _driver.FindElement(By.CssSelector("li[data-action-hint='task-overflow-menu-delete']"));
         private IWebElement deleteConfirmButton => _driver.FindElement(By.CssSelector("button[type='submit'] span"));
         private IWebElement duplicateMenuOption => _driver.FindElement(By.CssSelector("li[data-action-hint='task-overflow-menu-duplicate']"));
+        private IWebElement commentBtn => _driver.FindElement(By.CssSelector("a[aria-label='Comments']"));
+        private IWebElement commentTxtArea => _driver.FindElement(By.CssSelector("p[aria-placeholder='Comment']"));
+        private IWebElement addCommentBtn => _driver.FindElement(By.CssSelector("button[data-track='comments|add_comment']"));
+        private IWebElement closeCommentWindowBtn => _driver.FindElement(By.ClassName("project_detail_close"));
 
         private string taskItemXpath = "//li[contains(@class, 'task_list_item')]//div[text()='{0}']";
         private string addTaskLnkBtnXpath = "//span[text()='{0}']//ancestor::li//button[@class='plus_add_button']";
         private string moreMenuBtnXpath = "//div[text()='{0}']//ancestor::div[@class='task_list_item__body']//button[@data-testid='more_menu']";
         private string priorityOptionsCss = ".priority_list svg[data-priority='{0}']";
         private string prioritySelectorCss = "div[aria-label='Priority'] span";
+        private string commentTextContentXpath = "//p[text()='{0}']";
 
         public InboxPage(IWebDriver driver)
         {
@@ -85,6 +90,21 @@ namespace TodoistApplication.Pages
         public bool IsTaskItemDisplayed(string taskTitle)
         {
             return IsElementDisplayed(By.XPath(String.Format(taskItemXpath, taskTitle)), 10);
+        }
+
+        public void AddCommentToInbox(string comment)
+        {
+            cmnElement.ClickElement(commentBtn);
+            cmnElement.SetText(commentTxtArea, comment);
+            cmnElement.ClickElement(addCommentBtn);
+            cmnElement.ClickElement(closeCommentWindowBtn);
+        }
+
+        public bool IsCommentDisplayed(string comment)
+        {
+            cmnElement.ClickElement(commentBtn);
+
+            return IsElementDisplayed(By.XPath(String.Format(commentTextContentXpath, comment)), 10);
         }
     }
 }

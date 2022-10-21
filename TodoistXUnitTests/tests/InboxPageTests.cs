@@ -75,6 +75,16 @@ namespace TodoistTests.tests
             Assert.Equal(2, inboxPage.GetTasksCount(taskTitle));
         }
 
+        [Theory]
+        [InlineData("This is my first comment")]
+        public void VerifyACommentCanBeAddedToInbox(string comment)
+        {
+            BaseTestFixture.ExtentReportUtils.createATestCase("Verify that a comment can be added to the inbox");
+            inboxPage.AddCommentToInbox(comment);
+
+            Assert.True(inboxPage.IsCommentDisplayed(comment), "The comment was not added");
+        }
+
         public void Dispose()
         {
             webDriverManager.CloseAllBrowser();
