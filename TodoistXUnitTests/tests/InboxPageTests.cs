@@ -51,6 +51,18 @@ namespace TodoistTests.tests
             Assert.Equal(expectedResult, actualResult);
         }
 
+        [Theory]
+        [InlineData("Task_A")]
+        public void VerifyATaskCanBeDeleted(string taskTitle)
+        {
+            BaseTestFixture.ExtentReportUtils.createATestCase("Verify that a task priority can be deleted");
+            inboxPage.AddNewPriorityTask(taskTitle, "description", "Priority 1");
+
+            inboxPage.DeleteTask(taskTitle);
+
+            Assert.False(inboxPage.IsTaskItemDisplayed(taskTitle), "The task was not deleted");
+        }
+
         public void Dispose()
         {
             webDriverManager.CloseAllBrowser();

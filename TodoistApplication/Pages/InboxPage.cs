@@ -11,6 +11,8 @@ namespace TodoistApplication.Pages
         private IWebElement taskDescriptionTxtArea => _driver.FindElement(By.CssSelector("div.task_editor__input_fields textarea"));
         private IWebElement addTaskButton => _driver.FindElement(By.CssSelector("button[data-testid='task-editor-submit-button'] span"));
         private IWebElement closeTaskButton => _driver.FindElement(By.CssSelector("button[aria-label='Close modal']"));
+        private IWebElement deleteMenuOption => _driver.FindElement(By.CssSelector("li[data-action-hint='task-overflow-menu-delete']"));
+        private IWebElement deleteConfirmButton => _driver.FindElement(By.CssSelector("button[type='submit'] span"));
 
         private string taskItemXpath = "//li[contains(@class, 'task_list_item')]//div[text()='{0}']";
         private string addTaskLnkBtnXpath = "//span[text()='{0}']//ancestor::li//button[@class='plus_add_button']";
@@ -55,6 +57,16 @@ namespace TodoistApplication.Pages
             cmnElement.ClickElement(closeTaskButton);
 
             return taskPriority;
+        }
+
+        public void DeleteTask(string taskTitle)
+        {
+            IWebElement taskItem = _driver.FindElement(By.XPath(String.Format(taskItemXpath, taskTitle)));
+
+            WebDriverActions.MoveToElement(taskItem, _driver);
+            WaitAndFindElement(By.XPath(String.Format(moreMenuBtnXpath, taskTitle))).Click();
+            cmnElement.ClickElement(deleteMenuOption);
+            cmnElement.ClickElement(deleteConfirmButton);
         }
     }
 }
