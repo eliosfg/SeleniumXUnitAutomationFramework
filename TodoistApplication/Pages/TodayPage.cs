@@ -17,6 +17,10 @@ namespace TodoistApplication.Pages
         private IWebElement deleteConfirmButton => _driver.FindElement(By.CssSelector("button[type='submit'] span"));
         private IWebElement inboxButton => _driver.FindElement(By.Id("filter_inbox"));
         private IWebElement filterAndLabelButton => _driver.FindElement(By.Id("filters_labels"));
+        private IWebElement openCommentBtn => _driver.FindElement(By.CssSelector("button[data-testid='open-comment-editor-button']"));
+        private IWebElement commentTxtArea => _driver.FindElement(By.CssSelector("div.ProseMirror p"));
+        private IWebElement addCommentBtn => _driver.FindElement(By.CssSelector("button[data-track='comments|add_comment']"));
+        private IWebElement closeTaskWindowBtn => _driver.FindElement(By.CssSelector("button[aria-label='Close modal']"));
 
         private string todayTasksXpath = "//section[contains(@aria-label, 'Today')]";
         private string taskTitleXpath = "//li[@class='task_list_item']//div[text()='{0}']";
@@ -24,6 +28,7 @@ namespace TodoistApplication.Pages
         private string editButtonXpath = "//div[text()='{0}']//ancestor::li//button[@data-action-hint='task-edit']";
         private string setDueDateXpath = "//div[text()='{0}']//ancestor::li//button[@class='due_date_controls']";
         private string dueDateOptionXpath = "//div[@class='scheduler-suggestions']//div[text()='{0}']";
+        private string commentTxtXpath = "//div[@class='comments_list_container']//p[text()='{0}']";
 
         public TodayPage(IWebDriver driver)
         {
@@ -74,6 +79,27 @@ namespace TodoistApplication.Pages
             cmnElement.SetText(taskDescriptionTxtArea, newDescription);
 
             cmnElement.ClickElement(addTaskButton);
+        }
+
+        public bool IsTaskCommentDisplayed(string taskTitle, string taskComment)
+        {
+            IWebElement taskItem = _driver.FindElement(By.XPath(String.Format(taskTitleXpath, taskTitle)));
+
+            cmnElement.ClickElement(taskItem);
+
+            return IsElementDisplayed(By.XPath(String.Format(commentTxtXpath, taskComment)), 10);
+
+        }
+
+        public void AddCommentToATask(string taskTitle, string taskComment)
+        {
+            IWebElement taskItem = _driver.FindElement(By.XPath(String.Format(taskTitleXpath, taskTitle)));
+
+            cmnElement.ClickElement(taskItem);
+            cmnElement.ClickElement(openCommentBtn);
+            cmnElement.SetText(commentTxtArea, taskComment);
+            cmnElement.ClickElement(addCommentBtn);
+            cmnElement.ClickElement(closeTaskWindowBtn);
         }
 
         public void SetDueDate(string taskTitle, string dueDate)

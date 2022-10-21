@@ -12,7 +12,7 @@ namespace TodoistTests.tests
         private WebDriverManager webDriverManager;
         public BaseTestFixture BaseTestFixture;
         private LoginPage loginPage;
-        private TodayPage homePage;
+        private TodayPage todayPage;
         private ScreenshotUtils screenshot;
 
         public TodayPageTests(BaseTestFixture baseTestFixture)
@@ -21,7 +21,7 @@ namespace TodoistTests.tests
             webDriverManager = BrowserDriverFactory.GetBrowser(BaseTestFixture.Config.GetBrowserType());
             loginPage = new LoginPage(webDriverManager.Driver);
             screenshot = new ScreenshotUtils(webDriverManager.Driver);
-            homePage = new TodayPage(webDriverManager.Driver);
+            todayPage = new TodayPage(webDriverManager.Driver);
 
             webDriverManager.NavigateToURL(BaseTestFixture.Config.GetBaseUrl());
             loginPage.LoginToApplication(BaseTestFixture.Config.GetUsername(), BaseTestFixture.Config.GetPassword());
@@ -32,9 +32,9 @@ namespace TodoistTests.tests
         public void VerifyANewTaskCanBeAdded(string taskTitle, string taskDescription)
         {
             BaseTestFixture.ExtentReportUtils.createATestCase("Verify a new task can be added");
-            homePage.AddNewTask(taskTitle, taskDescription);
+            todayPage.AddNewTask(taskTitle, taskDescription);
 
-            Assert.True(homePage.IsTaskItemDisplayed(taskTitle), $"Task \"{taskTitle}\" was not created");
+            Assert.True(todayPage.IsTaskItemDisplayed(taskTitle), $"Task \"{taskTitle}\" was not created");
         }
 
         [Theory]
@@ -42,11 +42,11 @@ namespace TodoistTests.tests
         public void VerifyATaskCanBeDeleted(string taskTitle)
         {
             BaseTestFixture.ExtentReportUtils.createATestCase("Verify a task can be deleted");
-            homePage.AddNewTask(taskTitle, "task description");
+            todayPage.AddNewTask(taskTitle, "task description");
 
-            homePage.DeleteTask(taskTitle);
+            todayPage.DeleteTask(taskTitle);
 
-            Assert.False(homePage.IsTaskItemDisplayed(taskTitle));
+            Assert.False(todayPage.IsTaskItemDisplayed(taskTitle));
         }
 
         [Theory]
@@ -56,27 +56,39 @@ namespace TodoistTests.tests
             string firstTitle = "Task title";
             string firstDescription = "Task description";
             BaseTestFixture.ExtentReportUtils.createATestCase("Verify a task can be deleted");
-            homePage.AddNewTask(firstTitle, firstDescription);
+            todayPage.AddNewTask(firstTitle, firstDescription);
 
-            homePage.EditTask(firstTitle, newTitle, newDescription);
+            todayPage.EditTask(firstTitle, newTitle, newDescription);
 
-            Assert.False(homePage.IsTaskItemDisplayed(firstTitle));
-            Assert.True(homePage.IsTaskItemDisplayed(newTitle));
+            Assert.False(todayPage.IsTaskItemDisplayed(firstTitle));
+            Assert.True(todayPage.IsTaskItemDisplayed(newTitle));
         }
 
         [Theory]
         [InlineData("Task title", "Tomorrow")]
-        public void VerifyADueDateCanBeAddedToATask(string tastTitle, string dueDate)
+        public void VerifyADueDateCanBeAddedToATask(string taskTitle, string dueDate)
         {
             BaseTestFixture.ExtentReportUtils.createATestCase("Verify a due date can be added to a task");
-            homePage.AddNewTask(tastTitle, "Task description");
+            todayPage.AddNewTask(taskTitle, "Task description");
 
-            homePage.SetDueDate(tastTitle, dueDate);
+            todayPage.SetDueDate(taskTitle, dueDate);
 
-            Assert.False(homePage.IsTaskItemDisplayed(tastTitle));
+            Assert.False(todayPage.IsTaskItemDisplayed(taskTitle));
 
-            InboxPage inboxPage = homePage.GoToInboxPage();
-            Assert.True(inboxPage.IsTaskItemDisplayed(tastTitle));
+            InboxPage inboxPage = todayPage.GoToInboxPage();
+            Assert.True(inboxPage.IsTaskItemDisplayed(taskTitle));
+        }
+
+        [Theory]
+        [InlineData("Task_1", "This is the first comment")]
+        public void VerifyACommentCanBeAddedToATask(string taskTitle, string taskComment)
+        {
+            BaseTestFixture.ExtentReportUtils.createATestCase("Verify a new comment can be added to a task");
+            todayPage.AddNewTask(taskTitle, "Task description");
+
+            todayPage.AddCommentToATask(taskTitle, taskComment);
+
+            Assert.True(todayPage.IsTaskCommentDisplayed(taskTitle, taskComment), "The comment was not added");
         }
 
         public void Dispose()
