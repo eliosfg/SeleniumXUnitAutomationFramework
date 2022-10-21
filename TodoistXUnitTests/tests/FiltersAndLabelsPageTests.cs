@@ -76,6 +76,21 @@ namespace TodoistTests.tests
             Assert.False(filterAndLabelPage.IsFilterItemDisplayed(filterName), $"The filter {filterName} was not deleted");
         }
 
+        [Theory]
+        [InlineData("LabelName", "NewLabelName", "Light Blue")]
+        public void VerifyALabelCanBeEdited(string labelName, string newLabelName, string newLabelColor)
+        {
+            BaseTestFixture.ExtentReportUtils.createATestCase("Verify a label can be edited");
+            filterAndLabelPage.AddNewLabel(labelName, "Blue");
+
+            filterAndLabelPage.GoToMainView();
+            filterAndLabelPage.EditLabel(labelName, newLabelName, newLabelColor);
+
+            Assert.False(filterAndLabelPage.IsLabelItemDisplayed(labelName), "The label was not edited");
+            Assert.True(filterAndLabelPage.IsLabelItemDisplayed(newLabelName));
+            Assert.Equal(newLabelColor, filterAndLabelPage.GetLabelColor(newLabelName));
+        }
+
         public void Dispose()
         {
             webDriverManager.CloseAllBrowser();

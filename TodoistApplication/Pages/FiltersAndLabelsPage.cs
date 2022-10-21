@@ -1,6 +1,7 @@
 ﻿using CommonLibs.Implementation;
 using OpenQA.Selenium;
 using System;
+using System.Collections.Generic;
 
 namespace TodoistApplication.Pages
 {
@@ -17,11 +18,13 @@ namespace TodoistApplication.Pages
         private IWebElement deleteFilterBtn => _driver.FindElement(By.CssSelector("li[data-track='filters|menu_delete']"));
         private IWebElement filterNameTxtInput => _driver.FindElement(By.Id("edit_filter_modal_field_name"));
         private IWebElement filterQueryTxtInput => _driver.FindElement(By.Id("edit_filter_modal_field_query"));
+        private IWebElement colorLabel => _driver.FindElement(By.ClassName("color_dropdown_select__name"));
 
         private string dropdownColorOptXpath = "//span[text()='{0}']";
         private string labelFilterTitleXpath = "//h1//span[text()='{0}']";
         private string labelItemXpath = "//section[@aria-label='Labels']//span[text()='{0}']//ancestor::li";
         private string labelMoreMenuBtnXpath = "//section[@aria-label='Labels']//span[text()='{0}']//ancestor::li//button[@class='SidebarListItem__button']";
+        private string labelEditBtnXpath = "//span[text()='{0}']//ancestor::li//button[@aria-label='Edit label']";
         private string filterItemXpath = "//section[@aria-label='Filters']//span[text()='{0}']//ancestor::li";
         private string filterMoreMenuBtnXpath = "//section[@aria-label='Filters']//span[text()='{0}']//ancestor::li//button[@class='SidebarListItem__button']";
 
@@ -78,6 +81,30 @@ namespace TodoistApplication.Pages
 
             WaitAndFindElement(By.XPath(String.Format(dropdownColorOptXpath, filterColor))).Click();
             cmnElement.ClickElement(addRedBtn);
+        }
+
+        public void EditLabel(string labelName, string newLabelName, string newLabelColor)
+        {
+            IWebElement labelItem = _driver.FindElement(By.XPath(String.Format(labelItemXpath, labelName)));
+            WebDriverActions.MoveToElement(labelItem, _driver);
+
+            WaitAndFindElement(By.XPath(String.Format(labelEditBtnXpath, labelName))).Click();
+
+            cmnElement.ClearText(labelNameTxtInput);
+            cmnElement.SetText(labelNameTxtInput, newLabelName);
+            cmnElement.ClickElement(dropdownColorBtn);
+            cmnElement.ClickElement(WaitAndFindElement(By.XPath(String.Format(dropdownColorOptXpath, newLabelColor))));
+            cmnElement.ClickElement(addRedBtn);
+        }
+
+        public string GetLabelColor(string labelName)
+        {
+            IWebElement labelItem = _driver.FindElement(By.XPath(String.Format(labelItemXpath, labelName)));
+            WebDriverActions.MoveToElement(labelItem, _driver);
+
+            WaitAndFindElement(By.XPath(String.Format(labelEditBtnXpath, labelName))).Click();
+
+            return colorLabel.Text;
         }
 
         public void DeleteFilter(string filterName)
