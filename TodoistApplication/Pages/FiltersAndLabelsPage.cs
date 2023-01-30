@@ -1,7 +1,6 @@
 ﻿using CommonLibs.Implementation;
 using OpenQA.Selenium;
 using System;
-using System.Collections.Generic;
 
 namespace TodoistApplication.Pages
 {
@@ -18,7 +17,6 @@ namespace TodoistApplication.Pages
         private IWebElement deleteFilterBtn => _driver.FindElement(By.CssSelector("li[data-track='filters|menu_delete']"));
         private IWebElement filterNameTxtInput => _driver.FindElement(By.Id("edit_filter_modal_field_name"));
         private IWebElement filterQueryTxtInput => _driver.FindElement(By.Id("edit_filter_modal_field_query"));
-        private IWebElement colorLabel => _driver.FindElement(By.ClassName("color_dropdown_select__name"));
 
         private string dropdownColorOptXpath = "//span[text()='{0}']";
         private string labelFilterTitleXpath = "//h1//span[text()='{0}']";
@@ -27,6 +25,7 @@ namespace TodoistApplication.Pages
         private string labelEditBtnXpath = "//span[text()='{0}']//ancestor::li//button[@aria-label='Edit label']";
         private string filterItemXpath = "//section[@aria-label='Filters']//span[text()='{0}']//ancestor::li";
         private string filterMoreMenuBtnXpath = "//section[@aria-label='Filters']//span[text()='{0}']//ancestor::li//button[@class='SidebarListItem__button']";
+        private string colorLabelCss = ".color_dropdown_select__name";
 
         public FiltersAndLabelsPage(IWebDriver driver)
         {
@@ -104,7 +103,7 @@ namespace TodoistApplication.Pages
 
             WaitAndFindElement(By.XPath(String.Format(labelEditBtnXpath, labelName))).Click();
 
-            return colorLabel.Text;
+            return WaitAndFindElement(By.CssSelector(colorLabelCss)).Text;
         }
 
         public void DeleteFilter(string filterName)

@@ -88,7 +88,7 @@ namespace TodoistTests.tests
             filterAndLabelPage.EditLabel(labelName, newLabelName, newLabelColor);
 
             Assert.False(filterAndLabelPage.IsLabelItemDisplayed(labelName), "The label was not edited");
-            Assert.True(filterAndLabelPage.IsLabelItemDisplayed(newLabelName));
+            Assert.True(filterAndLabelPage.IsLabelItemDisplayed(newLabelName), "The label was not edited");
             Assert.Equal(newLabelColor, filterAndLabelPage.GetLabelColor(newLabelName));
         }
 
