@@ -28,7 +28,7 @@ namespace TodoistTests.tests
             loginPage.LoginToApplication(BaseTestFixture.Config.GetUsername(), BaseTestFixture.Config.GetPassword());
         }
 
-        [Theory]
+        [Theory(DisplayName = "VerifyANewTaskCanBeAdded")]
         [InlineData("My task title", "My task description")]
         public void VerifyANewTaskCanBeAdded(string taskTitle, string taskDescription)
         {
@@ -38,7 +38,7 @@ namespace TodoistTests.tests
             Assert.True(todayPage.IsTaskItemDisplayed(taskTitle), $"Task \"{taskTitle}\" was not created");
         }
 
-        [Theory]
+        [Theory(DisplayName = "VerifyATaskCanBeDeleted")]
         [InlineData("Another task title")]
         public void VerifyATaskCanBeDeleted(string taskTitle)
         {
@@ -50,7 +50,7 @@ namespace TodoistTests.tests
             Assert.False(todayPage.IsTaskItemDisplayed(taskTitle));
         }
 
-        [Theory]
+        [Theory(DisplayName = "VerifyATaskCanBeEdited")]
         [InlineData("New edited title", "New edited description")]
         public void VerifyATaskCanBeEdited(string newTitle, string newDescription)
         {
@@ -65,7 +65,7 @@ namespace TodoistTests.tests
             Assert.True(todayPage.IsTaskItemDisplayed(newTitle));
         }
 
-        [Theory]
+        [Theory(DisplayName = "VerifyADueDateCanBeAddedToATask")]
         [InlineData("Task title", "Tomorrow")]
         public void VerifyADueDateCanBeAddedToATask(string taskTitle, string dueDate)
         {
@@ -80,7 +80,7 @@ namespace TodoistTests.tests
             Assert.True(inboxPage.IsTaskItemDisplayed(taskTitle));
         }
 
-        [Theory]
+        [Theory(DisplayName = "VerifyACommentCanBeAddedToATask")]
         [InlineData("Task_1", "This is the first comment")]
         public void VerifyACommentCanBeAddedToATask(string taskTitle, string taskComment)
         {
@@ -90,6 +90,12 @@ namespace TodoistTests.tests
             todayPage.AddCommentToATask(taskTitle, taskComment);
 
             Assert.True(todayPage.IsTaskCommentDisplayed(taskTitle, taskComment), "The comment was not added");
+        }
+
+        [Fact(DisplayName = "LoginTest")]
+        public void VerifyLoginTest()
+        {
+            Assert.True(false);
         }
 
         public void Dispose()
