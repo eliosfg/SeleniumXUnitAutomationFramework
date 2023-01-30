@@ -13,12 +13,14 @@ namespace TodoistApplication.Pages
             _driver = driver;
         }
 
-        public void LoginToApplication(string sUsername, string sPassword)
+        public TodayPage LoginToApplication(string sUsername, string sPassword)
         {
             cmnElement.SetText(username, sUsername);
             cmnElement.SetText(password, sPassword);
 
             cmnElement.ClickElement(loginButton);
+
+            return new TodayPage(_driver);
         }
     }
 }

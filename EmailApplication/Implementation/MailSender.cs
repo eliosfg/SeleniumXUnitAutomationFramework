@@ -3,12 +3,7 @@ using EmailApplication.Utils;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmailApplication.Implementation
 {
@@ -46,7 +41,7 @@ namespace EmailApplication.Implementation
             SendEmailMessage(message);
         }
 
-        public void SendHtmlEmail(string emailRecipient, string emailSubject)
+        public void SendHtmlReportEmail(string emailRecipient, string emailSubject)
         {
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress(_config.GetFrom(), _config.GetEmailSender()));
@@ -56,12 +51,13 @@ namespace EmailApplication.Implementation
             BodyBuilder emailBody = new BodyBuilder();
             string bodyContent = string.Empty;
 
-            using (StreamReader reader = new StreamReader(_fileManager.GetLastHtmlReportFile()))
+            using (StreamReader reader = new StreamReader(_fileManager.GetEmailHtmlReportFile()))
             {
                 bodyContent = reader.ReadToEnd();
             }
 
             emailBody.HtmlBody = bodyContent;
+            emailBody.Attachments.Add(_fileManager.GetHtmlReportFile());
             message.Body = emailBody.ToMessageBody();
 
             SendEmailMessage(message);

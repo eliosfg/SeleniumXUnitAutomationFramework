@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace TodoistApplication.Pages
 {
-    public class HomePage: BasePage
+    public class TodayPage: BasePage
     {
         private IWebElement headerTitle => _driver.FindElement(By.CssSelector("header h1"));
         private IWebElement addTaskLnkButton => _driver.FindElement(By.CssSelector("button.plus_add_button"));
@@ -16,6 +16,11 @@ namespace TodoistApplication.Pages
         private IWebElement deleteMenuOption => _driver.FindElement(By.CssSelector("li[data-action-hint='task-overflow-menu-delete']"));
         private IWebElement deleteConfirmButton => _driver.FindElement(By.CssSelector("button[type='submit'] span"));
         private IWebElement inboxButton => _driver.FindElement(By.Id("filter_inbox"));
+        private IWebElement filterAndLabelButton => _driver.FindElement(By.Id("filters_labels"));
+        private IWebElement openCommentBtn => _driver.FindElement(By.CssSelector("button[data-testid='open-comment-editor-button']"));
+        private IWebElement commentTxtArea => _driver.FindElement(By.CssSelector("div.ProseMirror p"));
+        private IWebElement addCommentBtn => _driver.FindElement(By.CssSelector("button[data-track='comments|add_comment']"));
+        private IWebElement closeTaskWindowBtn => _driver.FindElement(By.CssSelector("button[aria-label='Close modal']"));
 
         private string todayTasksXpath = "//section[contains(@aria-label, 'Today')]";
         private string taskTitleXpath = "//li[@class='task_list_item']//div[text()='{0}']";
@@ -23,15 +28,16 @@ namespace TodoistApplication.Pages
         private string editButtonXpath = "//div[text()='{0}']//ancestor::li//button[@data-action-hint='task-edit']";
         private string setDueDateXpath = "//div[text()='{0}']//ancestor::li//button[@class='due_date_controls']";
         private string dueDateOptionXpath = "//div[@class='scheduler-suggestions']//div[text()='{0}']";
+        private string commentTxtXpath = "//div[@class='comments_list_container']//p[text()='{0}']";
 
-        public HomePage(IWebDriver driver)
+        public TodayPage(IWebDriver driver)
         {
             _driver = driver;
         }
 
         public string GetHeaderTitle()
         {
-            getWebDriverWait(10).Until(e => e.FindElement(By.CssSelector("header h1")).Displayed);
+            GetWebDriverWait(10).Until(e => e.FindElement(By.CssSelector("header h1")).Displayed);
             IWebElement headerTitle = _driver.FindElement(By.CssSelector("header h1"));
 
             return headerTitle.Text;
@@ -50,8 +56,8 @@ namespace TodoistApplication.Pages
             IWebElement tasksSection = _driver.FindElement(By.XPath(todayTasksXpath));
             IWebElement taskItem = tasksSection.FindElement(By.XPath(String.Format(taskTitleXpath, taskTitle)));
 
-            WebDriverActions.moveToElement(taskItem, _driver);
-            Thread.Sleep(2000);
+            WebDriverActions.MoveToElement(taskItem, _driver);
+            GetWebDriverWait(10).Until(ExpectedConditions.ElementIsVisible(By.XPath(String.Format(editButtonXpath, taskTitle))));
             IWebElement moreMenu = taskItem.FindElement(By.XPath(threeDotsMenuXpath));
 
             cmnElement.ClickElement(moreMenu);
@@ -63,8 +69,8 @@ namespace TodoistApplication.Pages
         {
             IWebElement taskItem = _driver.FindElement(By.XPath(String.Format(taskTitleXpath, taskTitle)));
 
-            WebDriverActions.moveToElement(taskItem, _driver);
-            getWebDriverWait(10).Until(ExpectedConditions.ElementIsVisible(By.XPath(String.Format(editButtonXpath, taskTitle)))).Click();
+            WebDriverActions.MoveToElement(taskItem, _driver);
+            GetWebDriverWait(10).Until(ExpectedConditions.ElementIsVisible(By.XPath(String.Format(editButtonXpath, taskTitle)))).Click();
 
             cmnElement.DeleteText(taskTitleInput);
             cmnElement.DeleteText(taskDescriptionTxtArea);
@@ -75,19 +81,40 @@ namespace TodoistApplication.Pages
             cmnElement.ClickElement(addTaskButton);
         }
 
+        public bool IsTaskCommentDisplayed(string taskTitle, string taskComment)
+        {
+            IWebElement taskItem = _driver.FindElement(By.XPath(String.Format(taskTitleXpath, taskTitle)));
+
+            cmnElement.ClickElement(taskItem);
+
+            return IsElementDisplayed(By.XPath(String.Format(commentTxtXpath, taskComment)), 10);
+
+        }
+
+        public void AddCommentToATask(string taskTitle, string taskComment)
+        {
+            IWebElement taskItem = _driver.FindElement(By.XPath(String.Format(taskTitleXpath, taskTitle)));
+
+            cmnElement.ClickElement(taskItem);
+            cmnElement.ClickElement(openCommentBtn);
+            cmnElement.SetText(commentTxtArea, taskComment);
+            cmnElement.ClickElement(addCommentBtn);
+            cmnElement.ClickElement(closeTaskWindowBtn);
+        }
+
         public void SetDueDate(string taskTitle, string dueDate)
         {
             IWebElement taskItem = _driver.FindElement(By.XPath(String.Format(taskTitleXpath, taskTitle)));
 
-            WebDriverActions.moveToElement(taskItem, _driver);
-            getWebDriverWait(10).Until(ExpectedConditions.ElementIsVisible(By.XPath(String.Format(setDueDateXpath, taskTitle)))).Click();
+            WebDriverActions.MoveToElement(taskItem, _driver);
+            GetWebDriverWait(10).Until(ExpectedConditions.ElementIsVisible(By.XPath(String.Format(setDueDateXpath, taskTitle)))).Click();
 
-            getWebDriverWait(10).Until(ExpectedConditions.ElementIsVisible(By.XPath(String.Format(dueDateOptionXpath, dueDate)))).Click();
+            GetWebDriverWait(10).Until(ExpectedConditions.ElementIsVisible(By.XPath(String.Format(dueDateOptionXpath, dueDate)))).Click();
         }
 
         public bool IsTaskItemDisplayed(string taskTitle)
         {
-            return isElementDisplayed(By.XPath(String.Format(taskTitleXpath, taskTitle)), 10);
+            return IsElementDisplayed(By.XPath(String.Format(taskTitleXpath, taskTitle)), 10);
         }
 
         public InboxPage GoToInboxPage()
@@ -95,6 +122,13 @@ namespace TodoistApplication.Pages
             cmnElement.ClickElement(inboxButton);
 
             return new InboxPage(_driver);
+        }
+
+        public FiltersAndLabelsPage GoToFilterAndLabelsPage()
+        {
+            cmnElement.ClickElement(filterAndLabelButton);
+
+            return new FiltersAndLabelsPage(_driver);
         }
     }
 }

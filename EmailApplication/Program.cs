@@ -34,18 +34,13 @@ namespace EmailApplication
             if (emailRecipient.Length > 0)
             {
                 Console.WriteLine("Sending report email...");
-                mailSender.SendHtmlEmail(emailRecipient, emailSubject);
+                mailSender.SendHtmlReportEmail(emailRecipient, emailSubject);
                 Console.WriteLine("Email sent successfully!");
             }
             else
             {
                 Console.WriteLine("You need to specify the \"--email\" and  \"--subject\" arguments to send an email");
             }
-
-            /*
-            Console.WriteLine("Sending email...");
-            c("saul.fuentes@jalasoft.com", "Test Results");
-            Console.WriteLine("Email sent successfully!");*/
         }
     }
 }

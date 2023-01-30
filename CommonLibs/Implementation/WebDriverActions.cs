@@ -10,7 +10,7 @@ namespace CommonLibs.Implementation
 {
     public class WebDriverActions
     {
-        public static void moveToElement(IWebElement webElement, IWebDriver webDriver)
+        public static void MoveToElement(IWebElement webElement, IWebDriver webDriver)
         {
             Actions actions = new Actions(webDriver);
             actions.MoveToElement(webElement).Perform();

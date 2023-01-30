@@ -6,30 +6,31 @@ using Xunit;
 
 namespace TodoistTests.tests
 {
-    [Collection("Sequence")]
-    public class LoginPageTests : IClassFixture<BaseTestFixture>, IDisposable
+    [Collection("Todoist collection")]
+    [Trait("Category", "LoginTests")]
+    public class LoginPageTests : IDisposable
     {
         WebDriverManager webDriverManager;
-        public BaseTestFixture BaseTestFixture { get; }
+        public BaseTestFixture BaseTestFixture;
         public LoginPage loginPage;
         ScreenshotUtils screenshot;
 
         public LoginPageTests(BaseTestFixture baseTestFixture)
         {
-            BaseTestFixture = baseTestFixture;
+            this.BaseTestFixture = baseTestFixture;
             webDriverManager = BrowserDriverFactory.GetBrowser(BaseTestFixture.Config.GetBrowserType());
             loginPage = new LoginPage(webDriverManager.Driver);
             screenshot = new ScreenshotUtils(webDriverManager.Driver);
         }
 
-        [Fact]
+        [Fact(DisplayName ="LoginTest")]
         public void VerifyLoginTest()
         {
             BaseTestFixture.ExtentReportUtils.createATestCase("Verify Login Test");
             webDriverManager.NavigateToURL(BaseTestFixture.Config.GetBaseUrl());
-            //BaseTestFixture.ExtentReportUtils.addTestLog(Status.Info, "Performing Login");
-            loginPage.LoginToApplication("eliosfg@gmail.com", "SaulFuentes1234");
-            HomePage homePage = new HomePage(webDriverManager.Driver);
+
+            loginPage.LoginToApplication(BaseTestFixture.Config.GetUsername(), BaseTestFixture.Config.GetPassword());
+            TodayPage homePage = new TodayPage(webDriverManager.Driver);
             
             string expectedTitle = "Today";
             string actualTitle = homePage.GetHeaderTitle();
@@ -39,19 +40,6 @@ namespace TodoistTests.tests
 
         public void Dispose()
         {
-            string currentExecutionTime = DateTime.Now.ToString("yyyy'-'MM'-'dd'T'HH'-'mm'-'ss");
-            string screenshotFilename = $@"{BaseTestFixture.Config.CurrentSolutionDirectory}\screenshots\test-{currentExecutionTime}.jpeg";
-
-            /*
-            Console.WriteLine(TestContext.CurrentContext.Result.Outcome);
-
-            if (TestContext.CurrentContext.Result.Outcome == ResultState.Failure)
-            {
-                extentReportUtils.addTestLog(Status.Fail, "One or more step failed");
-                screenshot.CaptureAndSaveScreenshot(screenshotFilename);
-                extentReportUtils.addScreenshot(screenshotFilename);
-            }*/
-
             webDriverManager.CloseAllBrowser();
         }
     }
