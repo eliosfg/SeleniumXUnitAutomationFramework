@@ -11,7 +11,14 @@ namespace EmailApplication.Utils
             this._rootPath = rootPath;
         }
 
-        public string GetLastHtmlReportFile()
+        public string GetEmailHtmlReportFile()
+        {
+            var htmlFile = Directory.GetFiles(_rootPath, "*email_*.html");
+
+            return htmlFile[htmlFile.Length - 1];
+        }
+
+        public string GetHtmlReportFile()
         {
             var htmlFile = Directory.GetFiles(_rootPath, "*.html");
 

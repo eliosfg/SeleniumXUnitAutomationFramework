@@ -34,7 +34,7 @@ namespace EmailApplication
             if (emailRecipient.Length > 0)
             {
                 Console.WriteLine("Sending report email...");
-                mailSender.SendHtmlEmail(emailRecipient, emailSubject);
+                mailSender.SendHtmlReportEmail(emailRecipient, emailSubject);
                 Console.WriteLine("Email sent successfully!");
             }
             else
