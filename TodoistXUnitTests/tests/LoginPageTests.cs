@@ -23,7 +23,7 @@ namespace TodoistTests.tests
             screenshot = new ScreenshotUtils(webDriverManager.Driver);
         }
 
-        [Fact]
+        [Fact(DisplayName ="LoginTest")]
         public void VerifyLoginTest()
         {
             BaseTestFixture.ExtentReportUtils.createATestCase("Verify Login Test");
